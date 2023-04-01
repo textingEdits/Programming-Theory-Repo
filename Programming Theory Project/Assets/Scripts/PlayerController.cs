@@ -10,10 +10,12 @@ public class PlayerController : MonoBehaviour
     Rigidbody slingRb;
     public GameObject player { get; private set; }
     bool isPressed;
+    public bool isSuccessful;
     [SerializeField] float releaseDelay { get; }
     [SerializeField] float maxDragDistance = 10f;
     [SerializeField] float minVelocity = 5f;
     [SerializeField] int bounceCount = 0;
+    [SerializeField] int bounceLimit = 10;
     public Vector3 lastFrameVelocity;
 
     void Start()
@@ -28,6 +30,7 @@ public class PlayerController : MonoBehaviour
         slingRb = sj.connectedBody;
         //Lock the ball in place until the player interacts with it
         rb.constraints = RigidbodyConstraints.FreezePosition;
+        isSuccessful = false;
     }
 
     void Update()
@@ -92,12 +95,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (bounceCount < 6 && !collision.gameObject.CompareTag("Shot Eater") && !collision.gameObject.CompareTag("Destructible"))
+        if (bounceCount < bounceLimit && !collision.gameObject.CompareTag("Shot Eater") && !collision.gameObject.CompareTag("Destructible"))
         {
             Bounce(collision.contacts[0].normal);
             ++bounceCount;
         }
-        else if (bounceCount < 6 && collision.gameObject.CompareTag("Destructible"))
+        else if (bounceCount < bounceLimit && collision.gameObject.CompareTag("Destructible"))
         {
             Bounce(collision.contacts[0].normal);
             Destroy(collision.gameObject);
@@ -110,6 +113,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        isSuccessful = true;
         Destroy(other.gameObject);
         Destroy(gameObject);
     }
