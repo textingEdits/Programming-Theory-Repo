@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ShotEaterType2 : PlatformController
 {
+    //INHERITANCE
     // Inheritance and polymorphism is utilized here. Borrowing from the Platform controller to modify the level 2 shot eater with enhanced forward stabbing speed.
     void Start()
     {
@@ -16,7 +17,7 @@ public class ShotEaterType2 : PlatformController
     {
         Move();
     }
-
+    //POLYMORPHISM
     protected override void GoRight()
     {
         transform.Translate(Vector3.right * speed * 6 * Time.deltaTime, Space.World);

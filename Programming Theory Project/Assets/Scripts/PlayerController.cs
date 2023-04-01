@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody rb;
     SpringJoint sj;
     Rigidbody slingRb;
+    //ENCAPSULATION
     public GameObject player { get; private set; }
     bool isPressed;
     public bool isSuccessful;
