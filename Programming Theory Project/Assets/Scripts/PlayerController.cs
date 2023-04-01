@@ -5,18 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody rb;
-    private SpringJoint sj;
-    private Rigidbody slingRb;
-    public GameObject player;
-    private bool isPressed;
-    public float releaseDelay;
-    public float maxDragDistance = 10f;
-    public float minVelocity = 5f;
-    public int bounceCount = 0;
+    Rigidbody rb;
+    SpringJoint sj;
+    Rigidbody slingRb;
+    public GameObject player { get; private set; }
+    bool isPressed;
+    [SerializeField] float releaseDelay { get; }
+    [SerializeField] float maxDragDistance = 10f;
+    [SerializeField] float minVelocity = 5f;
+    [SerializeField] int bounceCount = 0;
     public Vector3 lastFrameVelocity;
 
     void Start()
+    {
+        Initialize();
+    }
+
+    private void Initialize()
     {
         rb = GetComponent<Rigidbody>();
         sj = GetComponent<SpringJoint>();
@@ -24,6 +29,7 @@ public class PlayerController : MonoBehaviour
         //Lock the ball in place until the player interacts with it
         rb.constraints = RigidbodyConstraints.FreezePosition;
     }
+
     void Update()
     {
         //Continually track the ball's speed
@@ -53,19 +59,33 @@ public class PlayerController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        GrabBall();
+    }
+
+    private void GrabBall()
+    {
+        //Ball is locked to mouse position but still constrained by the invisible sling.
         isPressed = true;
         rb.isKinematic = true;
         rb.constraints = RigidbodyConstraints.None;
         rb.constraints = RigidbodyConstraints.FreezePositionZ;
     }
+
     private void OnMouseUp()
+    {
+        ReleaseBall();
+    }
+
+    private void ReleaseBall()
     {
         isPressed = false;
         rb.isKinematic = false;
         StartCoroutine("Release");
     }
+
     private IEnumerator Release()
     {
+        //The sling's break force is snapped just after the ball is released, sending it forward on it's trajectory.
         yield return new WaitForSeconds(releaseDelay);
         sj.breakForce = 0;
     }

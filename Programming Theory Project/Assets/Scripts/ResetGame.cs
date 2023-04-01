@@ -14,16 +14,17 @@ public class ResetGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // If the player ball is no longer detected this means that the game can restart.
         if (GameObject.Find("Player"))
             {
             return;
         }
         else
         {
-            StartCoroutine(Win());
+            StartCoroutine(Restart());
         }
     }
-    private IEnumerator Win()
+    private IEnumerator Restart()
     {
         yield return new WaitForSeconds(2.0f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
